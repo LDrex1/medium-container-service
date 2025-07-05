@@ -14,7 +14,7 @@ jobs:
 
       - name: Code Linting
         id: lint
-        uses: github/superlinter@v3.15.5
+        uses: super-linter/super-linter@v7.4.0
         env:
           GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
 
