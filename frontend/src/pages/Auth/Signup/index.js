@@ -8,6 +8,7 @@ import {
   Input,
   Button,
   Alert,
+  Select,
 } from "@chakra-ui/react";
 import { useFormik } from "formik";
 import validationSchema from "./validations";
@@ -22,6 +23,7 @@ function Signup({ history }) {
       email: "",
       password: "",
       passwordConfirm: "",
+      role: "user",
     },
     validationSchema,
     onSubmit: async (values, bag) => {
@@ -29,6 +31,7 @@ function Signup({ history }) {
         const registerResponse = await fetcRegister({
           email: values.email,
           password: values.password,
+          role: values.role,
         });
         login(registerResponse);
         history.push("/profile");
@@ -87,6 +90,19 @@ function Signup({ history }) {
                     formik.errors.passwordConfirm
                   }
                 />
+              </FormControl>
+              <FormControl mt="4">
+                <FormLabel>Role</FormLabel>
+                <Select
+                  name="role"
+                  placeholder="Select role"
+                  onChange={formik.handleChange}
+                  onBlur={formik.handleBlur}
+                  value={formik.values.role}
+                >
+                  <option>admin</option>
+                  <option>user</option>
+                </Select>
               </FormControl>
 
               <Button mt="4" width="full" type="submit">
