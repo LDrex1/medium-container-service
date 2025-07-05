@@ -38,7 +38,7 @@ function AdminProductDetail() {
       await updateProduct(values, product_id);
 
       message.success({
-        content: "The product successfully updates",
+        content: "Update sucessful",
         key: "product_update",
         duration: 2,
       });

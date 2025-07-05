@@ -33,7 +33,7 @@ function NewProduct() {
     newProductMutation.mutate(newValues, {
       onSuccess: () => {
         message.success({
-          content: "Add Product is successfully",
+          content: "Product added",
           key: "product_update",
           duration: 2,
         });
