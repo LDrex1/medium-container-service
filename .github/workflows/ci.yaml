@@ -1,0 +1,38 @@
+name: Continous Validation and Integration
+on:
+  push:
+    branches: [main, staging]
+jobs:
+  validation:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Code Linting
+        id: lint
+        uses: github/superlinter@v3.15.5
+        env:
+          GITHUB_TOKEN: ${{secrets.GITHUB_TOKEN}}
+          LINT: "terraform\n${{steps.lint.outputs.stdout}}"
+        with:
+          script: |
+            const output = #### Code Linting results \${{steps.lint.outcome}}\
+
+
+            <details><summary>Show Lint Result</summary>
+            \\\\n
+            ${{process.env.LINT}}
+            \\\\n
+            </details>
+            *Pushed by @${{github.actor}}, Action: \${{github.event_name}}\*;
+
+            github.rest.issues.createComment{{
+            issue_number: context.issue.number
+            owner: context.repo.owner
+            repo: context.repo.repo
+            body: output
+            }}
