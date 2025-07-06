@@ -31,6 +31,28 @@ jobs:
           queries: security-extended
 
       - name: Perform CodeQL Analysis
+        id: codeanl
         uses: github/codeql-action/analyze@v3
         with:
           category: "/language:${{matrix.language}}"
+
+      - name: Analysis Summary to PR
+        if: ${{ github.event_name == 'pull_request' }}
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const output = #### Code Linting results \${{steps.codeanl.outcome}}\
+
+            <details><summary>Show Lint Result</summary>
+            \\\\n
+            ${{job.status}}
+            \\\\n
+            </details>
+            *Pushed by @${{github.actor}}, Action: \${{github.event_name}}\*;
+
+            github.rest.issues.createComment{{
+            issue_number: context.issue.number
+            owner: context.repo.owner
+            repo: context.repo.repo
+            body: output
+            }}
