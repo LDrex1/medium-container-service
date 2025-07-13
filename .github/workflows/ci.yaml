@@ -90,8 +90,10 @@ jobs:
           cat docker-compose.yaml
           docker-compose pull backend
           docker-compose up -d --no-deps backend
+          echo "Waiting for services to settle"
+          sleep 40
+          echo "Showing running containers"
+          docker ps
+          echo "showing resource usage"
+          docker stats
           EOF
-      - name: Wait for services to settle
-        run: sleep 40
-      - name: Check running containers
-        run: docker ps
