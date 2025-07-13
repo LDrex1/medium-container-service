@@ -86,7 +86,7 @@ jobs:
           ssh -o StrictHostKeyChecking=no -i ~/.ssh/aws_test.pem ${{secrets.EC2_HOST}}@${{secrets.EC2_IP}} <<EOF
           cd /home/dami/ecorm/website
           cat docker-compose.yaml
-          sudo sed -i.bak "s|image: $DOCKER_USERNAME/backend-app.*|image: $DOCKER_USERNAME/backend-app:c6346e|" docker-compose.yaml
+          sudo sed -i.bak "s|image: $DOCKER_USERNAME/backend-app.*|image: $DOCKER_USERNAME/backend-app:$SHA|" docker-compose.yaml
           cat docker-compose.yaml
           docker-compose pull backend
           docker-compose up -d --no-deps backend
@@ -95,5 +95,5 @@ jobs:
           echo "Showing running containers"
           docker ps
           echo "showing resource usage"
-          docker stats
+          timeout 30 docker stats
           EOF
