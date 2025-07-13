@@ -73,17 +73,25 @@ jobs:
     env:
       DOCKER_USERNAME: ${{secrets.DOCKER_USERNAME}}
       SHA: ${{needs.docker.outputs.sha}}
+
     steps:
       - name: Set up SSH key
         run: |
           mkdir -p ~/.ssh
-          echo "${{secrets.SSH_KEY}}" > ~/.ssh/aws_test.pem
+          echo "${{ secrets.EC2_SSH_KEY }}" > ~/.ssh/aws_test.pem
+          cat ~/.ssh/aws_test.pem
           chmod 600 ~/.ssh/aws_test.pem
       - name: SSH into instance
         run: |
-          ssh -o StrictHostKeyChecking=no -i ~/.ssh/aws_test.pem ${{secrets.EC2_HOST}}@${{secrets.EC2_IP}} << EOF
-           cd /home/dami/ecorm/website
-           sed -i "s|image: $DOCKER_USERNAME/backend-app.*|image: $DOCKER_USERNAME/backend-app:$SHA/" docker-compose.yaml
-           docker-compose pull backend
-           docker-compose up -d --no-deps backend
-           EOF
+          ssh -o StrictHostKeyChecking=no -i ~/.ssh/aws_test.pem ${{secrets.EC2_HOST}}@${{secrets.EC2_IP}} <<EOF
+          cd /home/dami/ecorm/website
+          cat docker-compose.yaml
+          sudo sed -i.bak "s|image: $DOCKER_USERNAME/backend-app.*|image: $DOCKER_USERNAME/backend-app:c6346e|" docker-compose.yaml
+          cat docker-compose.yaml
+          docker-compose pull backend
+          docker-compose up -d --no-deps backend
+          EOF
+      - name: Wait for services to settle
+        run: sleep 40
+      - name: Check running containers
+        run: docker ps
