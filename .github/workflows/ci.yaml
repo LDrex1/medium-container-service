@@ -95,5 +95,5 @@ jobs:
           echo "Showing running containers"
           docker ps
           echo "showing resource usage"
-          timeout 30 docker stats
+          timeout 30 docker stats || true
           EOF
